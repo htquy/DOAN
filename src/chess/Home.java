@@ -78,7 +78,6 @@ public class Home extends javax.swing.JFrame {
         getContentPane().add(jButton3);
         jButton3.setBounds(130, 300, 129, 42);
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("C:\\Users\\84942\\Documents\\Documentary\\DOANHDT\\Chess\\src\\image\\Login.jpg")); // NOI18N
         jLabel2.setText("jLabel2");
         getContentPane().add(jLabel2);
         jLabel2.setBounds(0, 0, 400, 610);
