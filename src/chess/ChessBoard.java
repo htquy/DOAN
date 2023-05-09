@@ -6,7 +6,11 @@ import javax.swing.*;
 public class ChessBoard extends JFrame implements ActionListener{
    private JButton[][] boardSquares = new JButton[8][8];
    float [][] value=new float[8][8]; 
-   boolean move;
+   float [][] green=new float[8][8];
+   float [][] checkmate=new float[8][8];
+      boolean move;
+   int[][] fisrtw=new int[8][8];
+   int[][] fisrtb=new int[8][8];
    private boolean isClick;
    private boolean isClick2;   
    int a;int b;
@@ -34,10 +38,11 @@ public class ChessBoard extends JFrame implements ActionListener{
    }
 
    private void initializeBoard() {
-     
       JPanel chessBoard = new JPanel(new GridLayout(8, 8));
       for (int i = 0; i < 8; i++) {
          for (int j = 0; j < 8; j++) {
+             fisrtw[i][j]=0;
+          fisrtb[i][j]=0;
             JButton button = new JButton();
             button.setPreferredSize(new Dimension(75, 75));
             if ((i + j) % 2 == 0) {
@@ -135,26 +140,34 @@ setClick(false);
 setClick2(false);
 move=false;
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
-    if(getClick()){
+    if(getClick()&&i+1<8){
     boardSquares[i][j].setBackground(Color.GREEN);
    if(value[i+1][j]==0){
         boardSquares[i+1][j].setBackground(Color.GREEN);  
-        value[i+1][j]=0.5f;
-        if(value[i+2][j]==0)
+        green[i+1][j]=0.5f;
+        if(value[i+2][j]==0&&fisrtw[i][j]==0&&i+2<8)
         {boardSquares[i+2][j].setBackground(Color.GREEN);
-        value[i+2][j]=0.5f;}
-   for(int m=0;m<8;m++){
+        green[i+2][j]=0.5f;
+        //fisrtw[j]=1;
+        }
+   }if(i+1<8&&j+1<8&&j+value[i+1][j+1]<0){
+   boardSquares[i+1][j+1].setBackground(Color.GREEN);  
+        green[i+1][j+1]=0.5f;}
+   if(i+1<8&&j-1>=0&&value[i+1][j-1]<0){
+   boardSquares[i+1][j-1].setBackground(Color.GREEN);  
+        green[i+1][j-1]=0.5f;}
+    for(int m=0;m<8;m++){
         for(int n=0;n<8;n++){
-            if(value[m][n]==0.5f){changeIcon(m,n,i,j,chess);
+            if(green[m][n]==0.5f){changeIcon(m,n,i,j,chess);
             //settingboard();
     }
    }
 }
-   }}
+  
+    }
     else {
         settingboard();
-    }System.out.println(chess.a);
-     System.out.println(chess.b);
+    }
   });
 //if(move){chess.setindex(m,n);}
 }
@@ -163,11 +176,14 @@ private void changeIcon(int m,int n,int i,int j,ichess chess){
     move=false;
     
     boardSquares[m][n].addActionListener((java.awt.event.ActionEvent evt) ->{
-        if(getClick2()&&value[m][n]==0.5f){
+        if(getClick2()&&green[m][n]==0.5f){
     boardSquares[i][j].setIcon(null);
    settingboard();
-   if(value[i][j]==1){value[m][n]=1;value[i][j]=0;move=true;}
-else if(value[i][j]==-1){value[m][n]=-1;value[i][j]=0;move=true;}
+   if(value[i][j]==1){value[m][n]=1;value[i][j]=0;move=true;fisrtw[m][n]=fisrtw[i][j]+1;
+   fisrtw[i][j]=0;
+   }
+else if(value[i][j]==-1){value[m][n]=-1;value[i][j]=0;move=true;fisrtw[m][n]=fisrtw[i][j]+1;
+fisrtw[i][j]=0;}
 else if(value[i][j]==2){value[m][n]=2;value[i][j]=0;move=true;}
 else if(value[i][j]==-2){value[m][n]=-2;value[i][j]=0;move=true;}
 else if(value[i][j]==3){value[m][n]=3;value[i][j]=0;move=true;}
@@ -209,31 +225,31 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
         while(m+1<8&&n+1<8){
         m++;n++;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
         m--;n--;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }
         for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
-                if(value[t][k]==0.5f){
+                if(green[t][k]==0.5f){
                     changeIcon(t,k,i,j,chess);
                 }
             }
@@ -255,36 +271,37 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
         while(m+1<8&&n+1<8){
         m++;n++;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
-        if(value[m][n]<0)break;}else break;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+        if(value[m][n]>0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
         m--;n--;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
-        if(value[m][n]<0)break;}else break;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+        if(value[m][n]>0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
-        if(value[m][n]<0)break;}else break;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+        if(value[m][n]>0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
-        if(value[m][n]<0)break;}else break;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+        if(value[m][n]>0)break;}else break;
     }
         for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
-                if(value[t][k]==0.5f){
+                if(green[t][k]==0.5f){
                     changeIcon(t,k,i,j,chess);
                 }
             }
         }
     }
+
     else {
         settingboard();
     }
@@ -296,32 +313,32 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
         boardSquares[i][j].setBackground(Color.GREEN);
     if(i+2<8&&j+1<8){
-        if(value[i+2][j+1]<=0){boardSquares[i+2][j+1].setBackground(Color.GREEN);value[i+2][j+1]=0.5f;}
+        if(value[i+2][j+1]<=0){boardSquares[i+2][j+1].setBackground(Color.GREEN);green[i+2][j+1]=0.5f;}
     }
     if(i+2<8&&j-1>=0){
-        if(value[i+2][j-1]<=0){boardSquares[i+2][j-1].setBackground(Color.GREEN);value[i+2][j-1]=0.5f;}
+        if(value[i+2][j-1]<=0){boardSquares[i+2][j-1].setBackground(Color.GREEN);green[i+2][j-1]=0.5f;}
     }
     if(i-2>=0&&j+1<8){
-        if(value[i-2][j+1]<=0){boardSquares[i-2][j+1].setBackground(Color.GREEN);value[i-2][j+1]=0.5f;}
+        if(value[i-2][j+1]<=0){boardSquares[i-2][j+1].setBackground(Color.GREEN);green[i-2][j+1]=0.5f;}
     }
-    if(i-2>=0&&j-2>=0){
-        if(value[i-2][j-1]<=0){boardSquares[i-2][j-1].setBackground(Color.GREEN);value[i-2][j-2]=0.5f;}
+    if(i-2>=0&&j-1>=0){
+        if(value[i-2][j-1]<=0){boardSquares[i-2][j-1].setBackground(Color.GREEN);green[i-2][j-1]=0.5f;}
     }
     if(i+1<8&&j+2<8){
-        if(value[i+1][j+2]<=0){boardSquares[i+1][j+2].setBackground(Color.GREEN);value[i+1][j+2]=0.5f;}
+        if(value[i+1][j+2]<=0){boardSquares[i+1][j+2].setBackground(Color.GREEN);green[i+1][j+2]=0.5f;}
     }
     if(i+1<8&&j-2>=0){
-        if(value[i+1][j-2]<=0){boardSquares[i+1][j-2].setBackground(Color.GREEN);value[i+1][j-2]=0.5f;}
+        if(value[i+1][j-2]<=0){boardSquares[i+1][j-2].setBackground(Color.GREEN);green[i+1][j-2]=0.5f;}
     }
     if(i-1>=0&&j-2>=0){
-        if(value[i-1][j-2]<=0){boardSquares[i-1][j-2].setBackground(Color.GREEN);value[i-1][j-2]=0.5f;}
+        if(value[i-1][j-2]<=0){boardSquares[i-1][j-2].setBackground(Color.GREEN);green[i-1][j-2]=0.5f;}
     }
     if(i-1>=0&&j+2<8){
-        if(value[i-1][j+2]<=0){boardSquares[i-1][j+2].setBackground(Color.GREEN);value[i-1][j+2]=0.5f;}
+        if(value[i-1][j+2]<=0){boardSquares[i-1][j+2].setBackground(Color.GREEN);green[i-1][j+2]=0.5f;}
     }
     for(int m=0;m<8;m++){
             for(int n=0;n<8;n++){
-                if(value[m][n]==0.5f){
+                if(green[m][n]==0.5f){
                     changeIcon(m,n,i,j,chess);
                 }
             }
@@ -332,20 +349,34 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
 }
 private void setback_bpawn(int i,int j,ichess chess){
 setClick(false);
+setClick2(false);
+move=false;
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
-    if(getClick()){
-        boardSquares[i][j].setBackground(Color.GREEN);
-        if(value[i-1][j]==0){
-            boardSquares[i-1][j].setBackground(Color.GREEN);  
-            value[i-1][j]=0.5f;
-            if(value[i-2][j]==0)
-            {boardSquares[i-2][j].setBackground(Color.GREEN);
-            value[i-2][j]=0.5f;}}
-        for(int m=0;m<8;m++){
-            for(int n=0;n<8;n++){
-                if(value[m][n]==0.5f)changeIcon(m,n,i,j,chess);
-            }
+    if(getClick()&&i-1>=0){
+    boardSquares[i][j].setBackground(Color.GREEN);
+   if(value[i-1][j]==0){
+        boardSquares[i-1][j].setBackground(Color.GREEN);  
+        green[i-1][j]=0.5f;
+        if(value[i-2][j]==0&&fisrtb[i][j]==0&&i-2>=0)
+        {boardSquares[i-2][j].setBackground(Color.GREEN);
+        green[i-2][j]=0.5f;
+        //fisrtw[j]=1;
         }
+   }if(j+1<8&&value[i-1][j+1]>0){
+       
+   boardSquares[i-1][j+1].setBackground(Color.GREEN);  
+        green[i-1][j+1]=0.5f;}
+   if(j-1>=0&&value[i-1][j-1]>0){
+   boardSquares[i-1][j-1].setBackground(Color.GREEN);  
+        green[i-1][j-1]=0.5f;}
+    for(int m=0;m<8;m++){
+        for(int n=0;n<8;n++){
+            if(green[m][n]==0.5f){changeIcon(m,n,i,j,chess);
+            //settingboard();
+    }
+   }
+}
+  
     }
     else {
         settingboard();
@@ -358,32 +389,32 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
         boardSquares[i][j].setBackground(Color.GREEN);
     if(i+2<8&&j+1<8){
-        if(value[i+2][j+1]>=0){boardSquares[i+2][j+1].setBackground(Color.GREEN);value[i+2][j+1]=0.5f;}
+        if(value[i+2][j+1]>=0){boardSquares[i+2][j+1].setBackground(Color.GREEN);green[i+2][j+1]=0.5f;}
     }
     if(i+2<8&&j-1>=0){
-        if(value[i+2][j-1]>=0){boardSquares[i+2][j-1].setBackground(Color.GREEN);value[i+2][j-1]=0.5f;}
+        if(value[i+2][j-1]>=0){boardSquares[i+2][j-1].setBackground(Color.GREEN);green[i+2][j-1]=0.5f;}
     }
     if(i-2>=0&&j+1<8){
-        if(value[i-2][j+1]>=0){boardSquares[i-2][j+1].setBackground(Color.GREEN);value[i-2][j+1]=0.5f;}
+        if(value[i-2][j+1]>=0){boardSquares[i-2][j+1].setBackground(Color.GREEN);green[i-2][j+1]=0.5f;}
     }
-    if(i-2>=0&&j-2>=0){
-        if(value[i-2][j-1]>=0){boardSquares[i-2][j-1].setBackground(Color.GREEN);value[i-2][j-2]=0.5f;}
+    if(i-2>=0&&j-1>=0){
+        if(value[i-2][j-1]>=0){boardSquares[i-2][j-1].setBackground(Color.GREEN);green[i-2][j-1]=0.5f;}
     }
     if(i+1<8&&j+2<8){
-        if(value[i+1][j+2]>=0){boardSquares[i+1][j+2].setBackground(Color.GREEN);value[i+1][j+2]=0.5f;}
+        if(value[i+1][j+2]>=0){boardSquares[i+1][j+2].setBackground(Color.GREEN);green[i+1][j+2]=0.5f;}
     }
     if(i+1<8&&j-2>=0){
-        if(value[i+1][j-2]>=0){boardSquares[i+1][j-2].setBackground(Color.GREEN);value[i+1][j-2]=0.5f;}
+        if(value[i+1][j-2]>=0){boardSquares[i+1][j-2].setBackground(Color.GREEN);green[i+1][j-2]=0.5f;}
     }
     if(i-1>=0&&j-2>=0){
-        if(value[i-1][j-2]>=0){boardSquares[i-1][j-2].setBackground(Color.GREEN);value[i-1][j-2]=0.5f;}
+        if(value[i-1][j-2]>=0){boardSquares[i-1][j-2].setBackground(Color.GREEN);green[i-1][j-2]=0.5f;}
     }
     if(i-1>=0&&j+2<8){
-        if(value[i-1][j+2]>=0){boardSquares[i-1][j+2].setBackground(Color.GREEN);value[i-1][j+2]=0.5f;}
+        if(value[i-1][j+2]>=0){boardSquares[i-1][j+2].setBackground(Color.GREEN);green[i-1][j+2]=0.5f;}
     }
     for(int m=0;m<8;m++){
             for(int n=0;n<8;n++){
-                if(value[m][n]==0.5f){
+                if(green[m][n]==0.5f){
                     changeIcon(m,n,i,j,chess);
                 }
             }
@@ -401,33 +432,33 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
         while(m+1<8){
             m++;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]<0)break;
             }else break;
         }m=i;
         while(n+1<8){
             n++;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]<0)break;
             }else break;
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]<0)break;
             }else break;
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]<0)break;
             }else break;
         }for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
-                if(value[t][k]==0.5f){
+                if(green[t][k]==0.5f){
                     changeIcon(t,k,i,j,chess);
                 }
             }
@@ -444,33 +475,33 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
         while(m+1<8){
             m++;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n+1<8){
             n++;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
         }for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
-                if(value[t][k]==0.5f){
+                if(green[t][k]==0.5f){
                     changeIcon(t,k,i,j,chess);
                 }
             }
@@ -487,58 +518,58 @@ private void setback_wqueen(int i,int j,ichess chess){
         while(m+1<8){
             m++;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]<0)break;
             }else break;
         }m=i;
         while(n+1<8){
             n++;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]<0)break;
             }else break;
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]<0)break;
             }else break;
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]<=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]<0)break;
             }else break;
         }n=j;
         while(m+1<8&&n+1<8){
         m++;n++;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
         m--;n--;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]<=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
-                if(value[t][k]==0.5f){
+                if(green[t][k]==0.5f){
                     changeIcon(t,k,i,j,chess);
                 }
             }
@@ -555,58 +586,58 @@ private void setback_bqueen(int i,int j,ichess chess){
         while(m+1<8){
             m++;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n+1<8){
             n++;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]>=0){
-                boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
         }n=j;
         while(m+1<8&&n+1<8){
         m++;n++;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
         m--;n--;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]>=0){
-        boardSquares[m][n].setBackground(Color.GREEN);value[m][n]=0.5f;
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
-                if(value[t][k]==0.5f){
+                if(green[t][k]==0.5f){
                     changeIcon(t,k,i,j,chess);
                 }
             }
@@ -620,24 +651,24 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
         boardSquares[i][j].setBackground(Color.GREEN);
     if(i+1<8){
-        if(value[i+1][j]<=0){boardSquares[i+1][j].setBackground(Color.GREEN);value[i+1][j]=0.5f;}}
+        if(value[i+1][j]<=0){boardSquares[i+1][j].setBackground(Color.GREEN);green[i+1][j]=0.5f;}}
     if(j+1<8){
-        if(value[i][j+1]<=0){boardSquares[i][j+1].setBackground(Color.GREEN);value[i][j+1]=0.5f;}}
+        if(value[i][j+1]<=0){boardSquares[i][j+1].setBackground(Color.GREEN);green[i][j+1]=0.5f;}}
     if(i+1<8&&j+1<8){
-        if(value[i+1][j+1]<=0){boardSquares[i+1][j+1].setBackground(Color.GREEN);value[i+1][j+1]=0.5f;}}
+        if(value[i+1][j+1]<=0){boardSquares[i+1][j+1].setBackground(Color.GREEN);green[i+1][j+1]=0.5f;}}
     if(i-1>=0){
-        if(value[i-1][j]<=0){boardSquares[i-1][j].setBackground(Color.GREEN);value[i-1][j]=0.5f;}}
+        if(value[i-1][j]<=0){boardSquares[i-1][j].setBackground(Color.GREEN);green[i-1][j]=0.5f;}}
     if(j-1>=0){
-        if(value[i][j-1]<=0){boardSquares[i][j-1].setBackground(Color.GREEN);value[i][j-1]=0.5f;}}
+        if(value[i][j-1]<=0){boardSquares[i][j-1].setBackground(Color.GREEN);green[i][j-1]=0.5f;}}
     if(i-1>=0&&j-1>=0){
-        if(value[i-1][j-1]<=0){boardSquares[i-1][j-1].setBackground(Color.GREEN);value[i-1][j-1]=0.5f;}}
+        if(value[i-1][j-1]<=0){boardSquares[i-1][j-1].setBackground(Color.GREEN);green[i-1][j-1]=0.5f;}}
     if(i+1<8&&j-1>=0){
-        if(value[i+1][j-1]<=0){boardSquares[i+1][j-1].setBackground(Color.GREEN);value[i+1][j-1]=0.5f;}}
+        if(value[i+1][j-1]<=0){boardSquares[i+1][j-1].setBackground(Color.GREEN);green[i+1][j-1]=0.5f;}}
     if(i-1>=0&&j+1<8){
-        if(value[i-1][j+1]<=0){boardSquares[i-1][j+1].setBackground(Color.GREEN);value[i-1][j+1]=0.5f;}}
+        if(value[i-1][j+1]<=0){boardSquares[i-1][j+1].setBackground(Color.GREEN);green[i-1][j+1]=0.5f;}}
     for(int m=0;m<8;m++){
             for(int n=0;n<8;n++){
-                if(value[m][n]==0.5f){
+                if(green[m][n]==0.5f){
                     changeIcon(m,n,i,j,chess);
                 }
             }
@@ -652,24 +683,24 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
         boardSquares[i][j].setBackground(Color.GREEN);
     if(i+1<8){
-        if(value[i+1][j]>=0){boardSquares[i+1][j].setBackground(Color.GREEN);value[i+1][j]=0.5f;}}
+        if(value[i+1][j]>=0){boardSquares[i+1][j].setBackground(Color.GREEN);green[i+1][j]=0.5f;}}
     if(j+1<8){
-        if(value[i][j+1]>=0){boardSquares[i][j+1].setBackground(Color.GREEN);value[i][j+1]=0.5f;}}
+        if(value[i][j+1]>=0){boardSquares[i][j+1].setBackground(Color.GREEN);green[i][j+1]=0.5f;}}
     if(i+1<8&&j+1<8){
-        if(value[i+1][j+1]>=0){boardSquares[i+1][j+1].setBackground(Color.GREEN);value[i+1][j+1]=0.5f;}}
+        if(value[i+1][j+1]>=0){boardSquares[i+1][j+1].setBackground(Color.GREEN);green[i+1][j+1]=0.5f;}}
     if(i-1>=0){
-        if(value[i-1][j]>=0){boardSquares[i-1][j].setBackground(Color.GREEN);value[i-1][j]=0.5f;}}
+        if(value[i-1][j]>=0){boardSquares[i-1][j].setBackground(Color.GREEN);green[i-1][j]=0.5f;}}
     if(j-1>=0){
-        if(value[i][j-1]>=0){boardSquares[i][j-1].setBackground(Color.GREEN);value[i][j-1]=0.5f;}}
+        if(value[i][j-1]>=0){boardSquares[i][j-1].setBackground(Color.GREEN);green[i][j-1]=0.5f;}}
     if(i-1>=0&&j-1>=0){
-        if(value[i-1][j-1]>=0){boardSquares[i-1][j-1].setBackground(Color.GREEN);value[i-1][j-1]=0.5f;}}
+        if(value[i-1][j-1]>=0){boardSquares[i-1][j-1].setBackground(Color.GREEN);green[i-1][j-1]=0.5f;}}
     if(i+1<8&&j-1>=0){
-        if(value[i+1][j-1]>=0){boardSquares[i+1][j-1].setBackground(Color.GREEN);value[i+1][j-1]=0.5f;}}
+        if(value[i+1][j-1]>=0){boardSquares[i+1][j-1].setBackground(Color.GREEN);green[i+1][j-1]=0.5f;}}
     if(i-1>=0&&j+1<8){
-        if(value[i-1][j+1]>=0){boardSquares[i-1][j+1].setBackground(Color.GREEN);value[i-1][j+1]=0.5f;}}
+        if(value[i-1][j+1]>=0){boardSquares[i-1][j+1].setBackground(Color.GREEN);green[i-1][j+1]=0.5f;}}
     for(int m=0;m<8;m++){
             for(int n=0;n<8;n++){
-                if(value[m][n]==0.5f){
+                if(green[m][n]==0.5f){
                     changeIcon(m,n,i,j,chess);
                 }
             }
@@ -728,8 +759,8 @@ private void playchess(int i,int j,ichess chess){
 private void settingboard(){
     for (int m = 0; m < 8; m++) {
          for (int n = 0; n < 8; n++) {
-            if(value[m][n]<1&&value[m][n]>-1){
-                value[m][n]=0;
+            if(green[m][n]==0.5f){
+                green[m][n]=0;
             }
             if ((m + n) % 2 == 0) {
                boardSquares[m][n].setBackground(Color.WHITE);
@@ -801,6 +832,7 @@ class ichess{
        a=c;b=d;
    }
 }
+
    public static void main(String[] args) {
       new ChessBoard();
    }
