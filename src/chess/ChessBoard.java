@@ -9,6 +9,7 @@ public class ChessBoard extends JFrame implements ActionListener{
    float [][] green=new float[8][8];
    float [][] checkmate=new float[8][8];
       boolean move;
+      boolean turn;
    int[][] fisrtw=new int[8][8];
    int[][] fisrtb=new int[8][8];
    private boolean isClick;
@@ -38,6 +39,7 @@ public class ChessBoard extends JFrame implements ActionListener{
    }
 
    private void initializeBoard() {
+       turn=true;
       JPanel chessBoard = new JPanel(new GridLayout(8, 8));
       for (int i = 0; i < 8; i++) {
          for (int j = 0; j < 8; j++) {
@@ -61,6 +63,7 @@ public class ChessBoard extends JFrame implements ActionListener{
       add(chessBoard);
    }}
     private void updateBoard() {
+        turn=!turn;
      ichess ch=new ichess();
       JPanel chessBoard = new JPanel(new GridLayout(8, 8));
       for (int i = 0; i < 8; i++) {
@@ -145,15 +148,16 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
    if(value[i+1][j]==0){
         boardSquares[i+1][j].setBackground(Color.GREEN);  
         green[i+1][j]=0.5f;
-        if(value[i+2][j]==0&&fisrtw[i][j]==0&&i+2<8)
+        if(value[i+2][j]==0&&fisrtb[i][j]==0&&i+2<8)
         {boardSquares[i+2][j].setBackground(Color.GREEN);
         green[i+2][j]=0.5f;
         //fisrtw[j]=1;
         }
-   }if(i+1<8&&j+1<8&&j+value[i+1][j+1]<0){
+   }if(j+1<8&&i+1<8&&value[i+1][j+1]<0){
+       
    boardSquares[i+1][j+1].setBackground(Color.GREEN);  
         green[i+1][j+1]=0.5f;}
-   if(i+1<8&&j-1>=0&&value[i+1][j-1]<0){
+   if(j-1>=0&&i+1<8&&value[i+1][j-1]<0){
    boardSquares[i+1][j-1].setBackground(Color.GREEN);  
         green[i+1][j-1]=0.5f;}
     for(int m=0;m<8;m++){
@@ -720,42 +724,45 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
    }
 }
 private void playchess(int i,int j,ichess chess){
-    
-    if(value[i][j]==1){
+    if(turn==true){
+        if(value[i][j]==1){
         setback_wpawn(i,j,chess); 
     }
-    else if(value[i][j]==-1){
-        setback_bpawn(i,j,chess);   
+        else if(value[i][j]==6){
+        setback_wking(i,j,chess);
     }
-    else if(value[i][j]==2){
+        else if(value[i][j]==4){
+        setback_wrook(i,j,chess);
+    }
+        else if(value[i][j]==3){
+        setback_wknight(i,j,chess);
+    }
+        else if(value[i][j]==2){
         setback_wbishop(i,j,chess);
     }
+    }
+    else{
+    if(value[i][j]==-1){
+        setback_bpawn(i,j,chess);   
+    }
+    
     else if(value[i][j]==-2){
         setback_bbishop(i,j,chess);
     }
-    else if(value[i][j]==3){
-        setback_wknight(i,j,chess);
-    }
+    
     else if(value[i][j]==-3){
         setback_bknight(i,j,chess);
-    }
-    else if(value[i][j]==4){
-        setback_wrook(i,j,chess);
     }else if(value[i][j]==-4){
         setback_brook(i,j,chess);
     }
-    else if(value[i][j]==5){
-        setback_wqueen(i,j,chess);
-    }
+    
     else if(value[i][j]==-5){
         setback_bqueen(i,j,chess);
     }
-    else if(value[i][j]==6){
-        setback_wking(i,j,chess);
-    }
+    
     else if(value[i][j]==-6){
         setback_bking(i,j,chess);
-    }}
+    }}}
 private void settingboard(){
     for (int m = 0; m < 8; m++) {
          for (int n = 0; n < 8; n++) {
