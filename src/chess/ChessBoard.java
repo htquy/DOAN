@@ -148,7 +148,7 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
    if(value[i+1][j]==0){
         boardSquares[i+1][j].setBackground(Color.GREEN);  
         green[i+1][j]=0.5f;
-        if(value[i+2][j]==0&&fisrtb[i][j]==0&&i+2<8)
+        if(value[i+2][j]==0&&fisrtw[i][j]==0&&i+2<8)
         {boardSquares[i+2][j].setBackground(Color.GREEN);
         green[i+2][j]=0.5f;
         //fisrtw[j]=1;
