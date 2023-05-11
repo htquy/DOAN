@@ -7,8 +7,6 @@ public class ChessBoard extends JFrame implements ActionListener{
    private JButton[][] boardSquares = new JButton[8][8];
    float [][] value=new float[8][8]; 
    float [][] green=new float[8][8];
-   int count;
-   int row1,col1,row2,col2;
    float [][] checkmateb=new float[8][8];
    float [][] checkmatew=new float[8][8];
       boolean move;
@@ -34,7 +32,6 @@ public class ChessBoard extends JFrame implements ActionListener{
    }
    public ChessBoard() {
       //count=1;
-      count=0;
       initializeBoard();
 	initializeInfoPanel();
       setSize(750, 600);
@@ -44,7 +41,6 @@ public class ChessBoard extends JFrame implements ActionListener{
 
    private void initializeBoard() {
        turn=true;
-       count=0;
       JPanel chessBoard = new JPanel(new GridLayout(8, 8));
       for (int i = 0; i < 8; i++) {
          for (int j = 0; j < 8; j++) {
@@ -94,13 +90,13 @@ public class ChessBoard extends JFrame implements ActionListener{
             if(value[i][j]==3){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/white_knight.png")));}
             if(value[i][j]==4){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/white_rook.png")));}
             if(value[i][j]==5){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/white_queen.png")));}
-            if(value[i][j]==6){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/white_king.png")));row1=i;col1=j;}
+            if(value[i][j]==6){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/white_king.png")));}
             if(value[i][j]==-1){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_pawn.png")));}
             if(value[i][j]==-2){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_bishop.png")));}
             if(value[i][j]==-3){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_knight.png")));}
             if(value[i][j]==-4){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_rook.png")));}
             if(value[i][j]==-5){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_queen.png")));}
-            if(value[i][j]==-6){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_king.png")));row2=i;col2=j;}
+            if(value[i][j]==-6){boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_king.png")));}
             ActionListener[] listeners = boardSquares[i][j].getActionListeners();
 for (ActionListener listener : listeners) {
     boardSquares[i][j].removeActionListener(listener);
@@ -123,7 +119,7 @@ private void setBoard(int i,int j){
                 value[i][j]=5;
                boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/white_queen.png")));
             } else if (i == 0 && j == 3) {
-                value[i][j]=6;row1=i;col1=j;
+                value[i][j]=6;
                boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/white_king.png")));
             } else if (i == 1) {
                 value[i][j]=1;
@@ -146,7 +142,7 @@ private void setBoard(int i,int j){
                 value[i][j]=-6;
                boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_king.png")));
             } else if (i == 6) {
-                value[i][j]=-1;row2=i;col2=j;
+                value[i][j]=-1;
                boardSquares[i][j].setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/black_pawn.png")));
             }
 }
@@ -156,26 +152,27 @@ setClick(false);
 setClick2(false);
 move=false;
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
-    float p,q;
-    q=value[i][j];
     if(getClick()&&i+1<8){
     boardSquares[i][j].setBackground(Color.GREEN);
    if(value[i+1][j]==0){
-        p=value[i+1][j];
-        w_run(i+1,j,i,j,p,q);
+        boardSquares[i+1][j].setBackground(Color.GREEN);  
+        green[i+1][j]=0.5f;
         if(value[i+2][j]==0&&fisrtw[i][j]==0&&i+2<8)
-        {p=value[i+2][j];
-        w_run(i+2,j,i,j,p,q);
+        {boardSquares[i+2][j].setBackground(Color.GREEN);
+        green[i+2][j]=0.5f;
+        //fisrtw[j]=1;
         }
    }if(j+1<8&&i+1<8&&value[i+1][j+1]<0){
-        p=value[i+1][j+1];
-        w_run(i+1,j+1,i,j,p,q);}
+       
+   boardSquares[i+1][j+1].setBackground(Color.GREEN);  
+        green[i+1][j+1]=0.5f;}
    if(j-1>=0&&i+1<8&&value[i+1][j-1]<0){
-        p=value[i+1][j-1];
-        w_run(i+1,j-1,i,j,p,q);}
+   boardSquares[i+1][j-1].setBackground(Color.GREEN);  
+        green[i+1][j-1]=0.5f;}
     for(int m=0;m<8;m++){
         for(int n=0;n<8;n++){
             if(green[m][n]==0.5f){changeIcon(m,n,i,j,chess);
+            //settingboard();
     }
    }
 }
@@ -231,41 +228,36 @@ else if(value[i][j]==-6){value[m][n]=-6;value[i][j]=0;move=true;}
     //if(move){chess.setindex(i,j);}
 }
 private void setback_wbishop(int i,int j,ichess chess){
+    
 setClick(false);
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     int m,n; 
-    float p,q;
-    q=value[i][j];
     if(getClick()){
         m=i;n=j;
         boardSquares[m][n].setBackground(Color.GREEN);
         while(m+1<8&&n+1<8){
         m++;n++;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
         m--;n--;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }
         for(int t=0;t<8;t++){
@@ -281,88 +273,37 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     }
   });
 }
-private void b_run(int m,int n,int i,int j,float t,float k){
-            value[m][n]=k;
-            value[i][j]=0;
-            checkmateb[row2][col2]=0;
-            for(int p=0;p<8;p++){
-                for (int q=0;q<8;q++){
-                    bKing_run(p,q);
-                }
-            }
-            if(checkmateb[row2][col2]==1){
-            value[i][j]=k;value[m][n]=t;
-            for(int p=0;p<8;p++){
-                for (int q=0;q<8;q++){
-                    bKing_run(p,q);
-                }
-            }
-            }
-            else { value[i][j]=k;value[m][n]=t;
-            for(int p=0;p<8;p++){
-                for (int q=0;q<8;q++){
-                    bKing_run(p,q);
-                }
-            }
-            boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;}
-}
-private void w_run(int m,int n,int i,int j,float t,float k){
-            value[m][n]=k;
-            value[i][j]=0;
-            checkmatew[row1][col1]=0;
-            for(int p=0;p<8;p++){
-                for (int q=0;q<8;q++){
-                    wKing_run(p,q);
-                }
-            }
-            if(checkmatew[row1][col1]==-1){
-            value[i][j]=k;value[m][n]=t;
-            for(int p=0;p<8;p++){
-                for (int q=0;q<8;q++){
-                    wKing_run(p,q);
-                }
-            }
-            }
-            else { value[i][j]=k;value[m][n]=t;
-            for(int p=0;p<8;p++){
-                for (int q=0;q<8;q++){
-                    wKing_run(p,q);
-                }
-            }
-            boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;}
-}
 private void setback_bbishop(int i,int j,ichess chess){
     
 setClick(false);
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
-    int m,n;
-    float p,q;q=value[i][j];
+    int m,n;   
     if(getClick()){
         m=i;n=j;
         boardSquares[m][n].setBackground(Color.GREEN);
         while(m+1<8&&n+1<8){
-        m++;n++;p=value[m][n];
+        m++;n++;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
-        m--;n--;p=value[m][n];
+        m--;n--;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
-        m++;n--;p=value[m][n];
+        m++;n--;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
-        m--;n++;p=value[m][n];
+        m--;n++;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }
         for(int t=0;t<8;t++){
@@ -382,33 +323,31 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
 private void setback_wknight(int i,int j,ichess chess){
     setClick(false);
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
-    float p,q;
-    q=value[i][j];
     if(getClick()){
         boardSquares[i][j].setBackground(Color.GREEN);
     if(i+2<8&&j+1<8){
-        if(value[i+2][j+1]<=0){p=value[i+2][j+1];w_run(i+2,j+1,i,j,p,q);}
+        if(value[i+2][j+1]<=0){boardSquares[i+2][j+1].setBackground(Color.GREEN);green[i+2][j+1]=0.5f;}
     }
     if(i+2<8&&j-1>=0){
-        if(value[i+2][j-1]<=0){p=value[i+2][j-1];w_run(i+2,j-1,i,j,p,q);}
+        if(value[i+2][j-1]<=0){boardSquares[i+2][j-1].setBackground(Color.GREEN);green[i+2][j-1]=0.5f;}
     }
     if(i-2>=0&&j+1<8){
-        if(value[i-2][j+1]<=0){p=value[i-2][j+1];w_run(i-2,j+1,i,j,p,q);}
+        if(value[i-2][j+1]<=0){boardSquares[i-2][j+1].setBackground(Color.GREEN);green[i-2][j+1]=0.5f;}
     }
     if(i-2>=0&&j-1>=0){
-        if(value[i-2][j-1]<=0){p=value[i-2][j-1];w_run(i-2,j-1,i,j,p,q);}
+        if(value[i-2][j-1]<=0){boardSquares[i-2][j-1].setBackground(Color.GREEN);green[i-2][j-1]=0.5f;}
     }
     if(i+1<8&&j+2<8){
-        if(value[i+1][j+2]<=0){p=value[i+1][j+2];w_run(i+1,j+2,i,j,p,q);}
+        if(value[i+1][j+2]<=0){boardSquares[i+1][j+2].setBackground(Color.GREEN);green[i+1][j+2]=0.5f;}
     }
     if(i+1<8&&j-2>=0){
-        if(value[i+1][j-2]<=0){p=value[i+1][j-2];w_run(i+1,j-2,i,j,p,q);}
+        if(value[i+1][j-2]<=0){boardSquares[i+1][j-2].setBackground(Color.GREEN);green[i+1][j-2]=0.5f;}
     }
     if(i-1>=0&&j-2>=0){
-        if(value[i-1][j-2]<=0){p=value[i-1][j-2];w_run(i-1,j-2,i,j,p,q);}
+        if(value[i-1][j-2]<=0){boardSquares[i-1][j-2].setBackground(Color.GREEN);green[i-1][j-2]=0.5f;}
     }
     if(i-1>=0&&j+2<8){
-        if(value[i-1][j+2]<=0){p=value[i-1][j+2];w_run(i-1,j+2,i,j,p,q);}
+        if(value[i-1][j+2]<=0){boardSquares[i-1][j+2].setBackground(Color.GREEN);green[i-1][j+2]=0.5f;}
     }
     for(int m=0;m<8;m++){
             for(int n=0;n<8;n++){
@@ -426,30 +365,31 @@ setClick(false);
 setClick2(false);
 move=false;
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
-    float p,q;
-    q=value[i][j];
     if(getClick()&&i-1>=0){
     boardSquares[i][j].setBackground(Color.GREEN);
    if(value[i-1][j]==0){
-       p=value[i-1][j];
-        b_run(i-1,j,i,j,p,q);
+        boardSquares[i-1][j].setBackground(Color.GREEN);  
+        green[i-1][j]=0.5f;
         if(value[i-2][j]==0&&fisrtb[i][j]==0&&i-2>=0)
-        {p=value[i-2][j];
-        b_run(i-2,j,i,j,p,q);
+        {boardSquares[i-2][j].setBackground(Color.GREEN);
+        green[i-2][j]=0.5f;
+        //fisrtw[j]=1;
         }
    }if(j+1<8&&value[i-1][j+1]>0){
-        p=value[i-1][j+1];
-        b_run(i-1,j+1,i,j,p,q);
-   }
+       
+   boardSquares[i-1][j+1].setBackground(Color.GREEN);  
+        green[i-1][j+1]=0.5f;}
    if(j-1>=0&&value[i-1][j-1]>0){
-   p=value[i-1][j-1];
-   b_run(i-1,j-1,i,j,p,q);}
+   boardSquares[i-1][j-1].setBackground(Color.GREEN);  
+        green[i-1][j-1]=0.5f;}
     for(int m=0;m<8;m++){
         for(int n=0;n<8;n++){
             if(green[m][n]==0.5f){changeIcon(m,n,i,j,chess);
+            //settingboard();
     }
    }
 }
+  
     }
     else {
         settingboard();
@@ -459,36 +399,31 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
 private void setback_bknight(int i,int j,ichess chess){
     setClick(false);
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
-    float p,q;q=value[i][j];
     if(getClick()){
         boardSquares[i][j].setBackground(Color.GREEN);
     if(i+2<8&&j+1<8){
-        if(value[i+2][j-1]>=0){
-        p=value[i+2][j+1];
-        b_run(i+2,j+1,i,j,p,q);}
+        if(value[i+2][j+1]>=0){boardSquares[i+2][j+1].setBackground(Color.GREEN);green[i+2][j+1]=0.5f;}
     }
     if(i+2<8&&j-1>=0){
-        if(value[i+2][j-1]>=0){
-            p=value[i+2][j-1];
-        b_run(i+2,j-1,i,j,p,q);}
+        if(value[i+2][j-1]>=0){boardSquares[i+2][j-1].setBackground(Color.GREEN);green[i+2][j-1]=0.5f;}
     }
     if(i-2>=0&&j+1<8){
-        if(value[i-2][j+1]>=0){p=value[i-2][j+1];b_run(i-2,j+1,i,j,p,q);
-    }}
+        if(value[i-2][j+1]>=0){boardSquares[i-2][j+1].setBackground(Color.GREEN);green[i-2][j+1]=0.5f;}
+    }
     if(i-2>=0&&j-1>=0){
-        if(value[i-2][j-1]>=0){p=value[i-2][j-1];b_run(i-2,j-1,i,j,p,q);}
+        if(value[i-2][j-1]>=0){boardSquares[i-2][j-1].setBackground(Color.GREEN);green[i-2][j-1]=0.5f;}
     }
     if(i+1<8&&j+2<8){
-        if(value[i+1][j+2]>=0){p=value[i+1][j+2];b_run(i+1,j+2,i,j,p,q);}
+        if(value[i+1][j+2]>=0){boardSquares[i+1][j+2].setBackground(Color.GREEN);green[i+1][j+2]=0.5f;}
     }
     if(i+1<8&&j-2>=0){
-        if(value[i+1][j-2]>=0){p=value[i+1][j-2];b_run(i+1,j-2,i,j,p,q);}
+        if(value[i+1][j-2]>=0){boardSquares[i+1][j-2].setBackground(Color.GREEN);green[i+1][j-2]=0.5f;}
     }
     if(i-1>=0&&j-2>=0){
-        if(value[i-1][j-2]>=0){p=value[i-1][j-2];b_run(i-1,j-2,i,j,p,q);}
+        if(value[i-1][j-2]>=0){boardSquares[i-1][j-2].setBackground(Color.GREEN);green[i-1][j-2]=0.5f;}
     }
     if(i-1>=0&&j+2<8){
-        if(value[i-1][j+2]>=0){p=value[i-1][j+2];b_run(i-1,j+2,i,j,p,q);}
+        if(value[i-1][j+2]>=0){boardSquares[i-1][j+2].setBackground(Color.GREEN);green[i-1][j+2]=0.5f;}
     }
     for(int m=0;m<8;m++){
             for(int n=0;n<8;n++){
@@ -506,36 +441,34 @@ private void setback_wrook(int i,int j,ichess chess){
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
         int m,n;m=i;n=j;
-        float p,q;
-        q=value[i][j];
         boardSquares[i][j].setBackground(Color.GREEN);
         while(m+1<8){
             m++;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+                if(value[m][n]<0)break;
+            }else break;
         }m=i;
         while(n+1<8){
             n++;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+                if(value[m][n]<0)break;
+            }else break;
         }n=j;
         while(m-1>=0){
             m--;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+            if(value[m][n]<0)break;
+            }else break;
         }m=i;
         while(n-1>=0){
             n--;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+            if(value[m][n]<0)break;
+            }else break;
         }for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
                 if(green[t][k]==0.5f){
@@ -551,34 +484,32 @@ private void setback_brook(int i,int j,ichess chess){
 boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
         int m,n;m=i;n=j;
-        float p,q;
-        q=value[i][j];
         boardSquares[i][j].setBackground(Color.GREEN);
         while(m+1<8){
-            m++;p=value[m][n];
+            m++;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n+1<8){
-            n++;p=value[m][n];
+            n++;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }n=j;
         while(m-1>=0){
-            m--;p=value[m][n];
+            m--;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n-1>=0){
-            n--;p=value[m][n];
+            n--;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
         }for(int t=0;t<8;t++){
@@ -595,65 +526,59 @@ private void setback_wqueen(int i,int j,ichess chess){
     setClick(false);
     boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
-        float p,q;
         int m,n;m=i;n=j;
-        q=value[i][j];
         boardSquares[i][j].setBackground(Color.GREEN);
         while(m+1<8){
             m++;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+                if(value[m][n]<0)break;
+            }else break;
         }m=i;
         while(n+1<8){
             n++;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+                if(value[m][n]<0)break;
+            }else break;
         }n=j;
         while(m-1>=0){
             m--;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+            if(value[m][n]<0)break;
+            }else break;
         }m=i;
         while(n-1>=0){
             n--;
-            p=value[m][n];
-        if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
-        if(value[m][n]<0)break;}else break;
+            if(value[m][n]<=0){
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+            if(value[m][n]<0)break;
+            }else break;
         }n=j;
         while(m+1<8&&n+1<8){
         m++;n++;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
         m--;n--;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
-        p=value[m][n];
         if(value[m][n]<=0){
-            w_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]<0)break;}else break;
     }for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
@@ -670,64 +595,60 @@ private void setback_bqueen(int i,int j,ichess chess){
     boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     if(getClick()){
         int m,n;m=i;n=j;
-        float p,q;
-        q=value[m][n];
         boardSquares[i][j].setBackground(Color.GREEN);
         while(m+1<8){
-            m++;p=value[m][n];
+            m++;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n+1<8){
-            n++;p=value[m][n];
+            n++;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
                 if(value[m][n]>0)break;
             }else break;
         }n=j;
         while(m-1>=0){
-            m--;p=value[m][n];
+            m--;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
         }m=i;
         while(n-1>=0){
-            n--;p=value[m][n];
+            n--;
             if(value[m][n]>=0){
-                b_run(m,n,i,j,p,q);
+                boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
             if(value[m][n]>0)break;
             }else break;
-        }
-        m=i;n=j;
-        boardSquares[m][n].setBackground(Color.GREEN);
+        }n=j;
         while(m+1<8&&n+1<8){
-        m++;n++;p=value[m][n];
+        m++;n++;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
-        m--;n--;p=value[m][n];
+        m--;n--;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
-        m++;n--;p=value[m][n];
+        m++;n--;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
         if(value[m][n]>0)break;}else break;
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
-        m--;n++;p=value[m][n];
+        m--;n++;
         if(value[m][n]>=0){
-            b_run(m,n,i,j,p,q);
-        if(value[m][n]>0)break;}else break;}
-        for(int t=0;t<8;t++){
+        boardSquares[m][n].setBackground(Color.GREEN);green[m][n]=0.5f;
+        if(value[m][n]>0)break;}else break;
+    }for(int t=0;t<8;t++){
             for(int k=0;k<8;k++){
                 if(green[t][k]==0.5f){
                     changeIcon(t,k,i,j,chess);
@@ -805,27 +726,11 @@ boardSquares[i][j].addActionListener((java.awt.event.ActionEvent evt) -> {
     
    for(int i=0;i<8;i++){
        for(int j=0;j<8;j++){
+           //ichess chess=new ichess();
+           //chess.setindex(i, j);
             playchess(i,j,chess);
        }
    }
-   if(checkmateb[row2][col2]==1){
-    int option = JOptionPane.showOptionDialog(null, "White win!!!", "ENDGAME", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"OK"}, null);
-        
-        if (option == JOptionPane.OK_OPTION) {
-            // Nút "OK" được nhấn
-            new Home().setVisible(true);       
-        dispose();
-        }
-    }
-if(checkmatew[row1][col1]==1){
-    int option = JOptionPane.showOptionDialog(null, "Black win!!!", "ENDGAME", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{"OK"}, null);
-        
-        if (option == JOptionPane.OK_OPTION) {
-            // Nút "OK" được nhấn
-            new Home().setVisible(true);       
-        dispose();
-        }
-    }
 }
 private void playchess(int i,int j,ichess chess){
     if(turn==true){
@@ -869,8 +774,7 @@ private void playchess(int i,int j,ichess chess){
     
     else if(value[i][j]==-6){
         setback_bking(i,j,chess);
-    }}
-}
+    }}}
 private void settingboard(){
     for (int m = 0; m < 8; m++) {
          for (int n = 0; n < 8; n++) {
@@ -951,103 +855,72 @@ private void bKing_run(int i,int j){
     int m,n;
     if(value[i][j]==1){
         if(j+1<8&&i+1<8){ 
-            if(value[i+1][j+1]==-6){checkmateb[i+1][j+1]=1;}
-            else checkmateb[i+1][j+1]=0.5f;}
+        checkmateb[i+1][j+1]=0.5f;}
    if(j-1>=0&&i+1<8){
-       if(value[i+1][j-1]==-6){checkmateb[i+1][j-1]=1;}
-       else checkmateb[i+1][j-1]=0.5f;}
+        checkmateb[i+1][j-1]=0.5f;}
     }
-    else if(value[i][j]==2){
+    if(value[i][j]==2){
         m=i;n=j;
         
         while(m+1<8&&n+1<8){
         m++;n++;
         if(value[m][n]==0){
         checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
-            else {checkmateb[m][n]=0.5f;break;}
-    }    m=i;n=j;
-        m=i;n=j;
-        
+        else {checkmateb[m][n]=0.5f;break;}
+    }   m=i;n=j;
         while(m-1>=0&&n-1>=0){
         m--;n--;
         if(value[m][n]==0){
-       checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
-            else {checkmateb[m][n]=0.5f;break;}
+        checkmateb[m][n]=0.5f;}
+        else {checkmateb[m][n]=0.5f;break;}
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]==0){
-       checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
-            else {checkmateb[m][n]=0.5f;break;}
+        checkmateb[m][n]=0.5f;}
+        else {checkmateb[m][n]=0.5f;break;}
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]==0){
         checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
-            else {checkmateb[m][n]=0.5f;break;}
+        else {checkmateb[m][n]=0.5f;break;}
     }}
-    else if(value[i][j]==4){
+    if(value[i][j]==4){
         m=i;n=j;
         while(m+1<8){
             m++;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+                checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
             }
         m=i;
         while(n+1<8){
             n++;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+     checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+                checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
           
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+                checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
         }}
-    else if(value[i][j]==5){
+    if(value[i][j]==5){
         m=i;n=j;
         
         while(m+1<8&&n+1<8){
         m++;n++;
         if(value[m][n]==0){
         checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
             else {checkmateb[m][n]=0.5f;break;}
     }   m=i;n=j;
         
@@ -1055,190 +928,135 @@ private void bKing_run(int i,int j){
         m--;n--;
         if(value[m][n]==0){
        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
             else {checkmateb[m][n]=0.5f;break;}
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]==0){
        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
             else {checkmateb[m][n]=0.5f;break;}
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]==0){
         checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
             else {checkmateb[m][n]=0.5f;break;}
     }m=i;n=j;
         while(m+1<8){
             m++;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+                checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
             }
         m=i;
         while(n+1<8){
             n++;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+     checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+                checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
           
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]==0){
-        checkmateb[m][n]=0.5f;}
-        else if(value[m][n]==-6){
-            checkmateb[m][n]=1;
-        }
+                checkmateb[m][n]=0.5f;}
             else {checkmateb[m][n]=0.5f;break;}
-        }}
+        }
+}
      else if(value[i][j]==3){
         if(i+2<8&&j+1<8){
-            if(value[i+2][j+1]<=0){checkmateb[i+2][j+1]=0.5f;
-            if(value[i+2][j+1]==-6){checkmateb[i+2][j+1]=1;}
-           }
+            if(value[i+2][j+1]<=0){checkmateb[i+2][j+1]=0.5f;}
         }
         if(i+2<8&&j-1>=0){
-            if(value[i+2][j-1]<=0){checkmateb[i+2][j-1]=0.5f;
-            if(value[i+2][j-1]==-6){checkmateb[i+2][j-1]=1;}}
+            if(value[i+2][j-1]<=0){checkmateb[i+2][j-1]=0.5f;}
         }
         if(i-2>=0&&j+1<8){
-            if(value[i-2][j+1]<=0){checkmateb[i-2][j+1]=0.5f;
-            if(value[i-2][j+1]==-6){checkmateb[i-2][j+1]=1;}}
+            if(value[i-2][j+1]<=0){checkmateb[i-2][j+1]=0.5f;}
         }
         if(i-2>=0&&j-2>=0){
-            if(value[i-2][j-1]<=0){checkmateb[i-2][j-1]=0.5f;
-            if(value[i-2][j-1]==-6){checkmateb[i-2][j-1]=1;}}
+            if(value[i-2][j-1]<=0){checkmateb[i-2][j-2]=0.5f;}
         }
         if(i+1<8&&j+2<8){
-            if(value[i+1][j+2]<=0){checkmateb[i+1][j+2]=0.5f;
-            if(value[i+1][j+2]==-6){checkmateb[i+1][j+2]=1;}}
+            if(value[i+1][j+2]<=0){checkmateb[i+1][j+2]=0.5f;}
         }
         if(i+1<8&&j-2>=0){
-            if(value[i+1][j-2]<=0){checkmateb[i+1][j-2]=0.5f;
-            if(value[i+1][j-2]==-6){checkmateb[i+1][j-2]=1;}}
+            if(value[i+1][j-2]<=0){checkmateb[i+1][j-2]=0.5f;}
         }
         if(i-1>=0&&j-2>=0){
-            if(value[i-1][j-2]<=0){checkmateb[i-1][j-2]=0.5f;
-            if(value[i-1][j-2]==-6){checkmateb[i-1][j-2]=1;}}
+            if(value[i-1][j-2]<=0){checkmateb[i-1][j-2]=0.5f;}
         }
         if(i-1>=0&&j+2<8){
-            if(value[i-1][j+2]<=0){checkmateb[i-1][j+2]=0.5f;
-            if(value[i-1][j+2]==-6){checkmateb[i-1][j+2]=1;}}
+            if(value[i-1][j+2]<=0){checkmateb[i-1][j+2]=0.5f;}
         }
      }
 }
 private void wKing_run(int i,int j){
     int m,n;
     if(value[i][j]==-1){
-        if(j+1<8&&i-1>=0){ 
-        if(value[i-1][j+1]==6){checkmatew[i-1][j+1]=-1;}
-        else checkmatew[i-1][j+1]=-0.5f;}
-   if(j-1>=0&&i-1>=0){
-        if(value[i-1][j-1]==6){checkmatew[i-1][j-1]=-1;}
-            else checkmatew[i-1][j-1]=-0.5f;}
+        if(j+1<8&&i+1<8){ 
+        checkmatew[i-1][j+1]=-0.5f;}
+   if(j-1>=0&&i+1<8){
+        checkmatew[i-1][j-1]=-0.5f;}
     }
     if(value[i][j]==-2){
         m=i;n=j;
         
         while(m+1<8&&n+1<8){
-            m++;n++;
+        m++;n++;
         if(value[m][n]==0){
         checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
-            else {checkmatew[m][n]=-0.5f;break;}
+        else {checkmatew[m][n]=-0.5f;break;}
     }   m=i;n=j;
         while(m-1>=0&&n-1>=0){
         m--;n--;
         if(value[m][n]==0){
         checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
-            else {checkmatew[m][n]=-0.5f;break;}
+        else {checkmatew[m][n]=-0.5f;break;}
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]==0){
         checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
-            else {checkmatew[m][n]=-0.5f;break;}
+        else {checkmatew[m][n]=-0.5f;break;}
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]==0){
         checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
-            else {checkmatew[m][n]=-0.5f;break;}
+        else {checkmatew[m][n]=-0.5f;break;}
     }}
     if(value[i][j]==-4){
         m=i;n=j;
         while(m+1<8){
             m++;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+                checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
             }
         m=i;
         while(n+1<8){
             n++;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+     checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+                checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
           
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+                checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
         }}
     if(value[i][j]==-5){
@@ -1248,112 +1066,80 @@ private void wKing_run(int i,int j){
         m++;n++;
         if(value[m][n]==0){
         checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
             else {checkmatew[m][n]=-0.5f;break;}
     }   m=i;n=j;
         
         while(m-1>=0&&n-1>=0){
         m--;n--;
         if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+       checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
     }     m=i;n=j;
         while(m+1<8&&n-1>=0){
         m++;n--;
         if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+       checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
     }m=i;n=j;
         while(m-1>=0&&n+1<8){
         m--;n++;
         if(value[m][n]==0){
         checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
             else {checkmatew[m][n]=-0.5f;break;}
     }m=i;n=j;
         while(m+1<8){
             m++;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+                checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
             }
         m=i;
         while(n+1<8){
             n++;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+     checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
         }n=j;
         while(m-1>=0){
             m--;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+                checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
           
         }m=i;
         while(n-1>=0){
             n--;
             if(value[m][n]==0){
-        checkmatew[m][n]=-0.5f;}
-        else if(value[m][n]==6){
-            checkmatew[m][n]=-1;
-        }
+                checkmatew[m][n]=-0.5f;}
             else {checkmatew[m][n]=-0.5f;break;}
         }
 }
      else if(value[i][j]==-3){
         if(i+2<8&&j+1<8){
-            if(value[i+2][j+1]>=0){checkmatew[i+2][j+1]=-0.5f;
-            if(value[i+2][j+1]==6){checkmatew[i+2][j+1]=-1;}
+            if(value[i+2][j+1]<=0){checkmatew[i+2][j+1]=-0.5f;}
         }
         if(i+2<8&&j-1>=0){
-            if(value[i+2][j-1]>=0){checkmatew[i+2][j-1]=-0.5f;
-            if(value[i+2][j-1]==6){checkmatew[i+2][j-1]=-1;}}
+            if(value[i+2][j-1]<=0){checkmatew[i+2][j-1]=-0.5f;}
         }
         if(i-2>=0&&j+1<8){
-            if(value[i-2][j+1]>=0){checkmatew[i-2][j+1]=-0.5f;
-            if(value[i-2][j+1]==6){checkmatew[i-2][j+1]=-1;}}
+            if(value[i-2][j+1]<=0){checkmatew[i-2][j+1]=-0.5f;}
         }
-        if(i-2>=0&&j-1>=0){
-            if(value[i-2][j-1]>=0){checkmatew[i-2][j-1]=-0.5f;
-            if(value[i-2][j-1]==6){checkmatew[i-2][j-1]=-1;}}
+        if(i-2>=0&&j-2>=0){
+            if(value[i-2][j-1]<=0){checkmatew[i-2][j-2]=-0.5f;}
         }
         if(i+1<8&&j+2<8){
-            if(value[i+1][j+2]>=0){checkmatew[i+1][j+2]=-0.5f;
-            if(value[i+1][j+2]==6){checkmatew[i+1][j+2]=-1;}}
+            if(value[i+1][j+2]<=0){checkmatew[i+1][j+2]=-0.5f;}
         }
         if(i+1<8&&j-2>=0){
-            if(value[i+1][j-2]>=0){checkmatew[i+1][j-2]=-0.5f;
-            if(value[i+1][j-2]==6){checkmatew[i+1][j-2]=-1;}}
+            if(value[i+1][j-2]<=0){checkmatew[i+1][j-2]=-0.5f;}
         }
         if(i-1>=0&&j-2>=0){
-            if(value[i-1][j-2]>=0){checkmatew[i-1][j-2]=-0.5f;
-            if(value[i-1][j-2]==6){checkmatew[i-1][j-2]=-1;}}
+            if(value[i-1][j-2]<=0){checkmatew[i-1][j-2]=-0.5f;}
         }
         if(i-1>=0&&j+2<8){
-            if(value[i-1][j+2]>=0){checkmatew[i-1][j+2]=-0.5f;
-            if(value[i-1][j+2]==6){checkmatew[i-1][j+2]=-1;}}
+            if(value[i-1][j+2]<=0){checkmatew[i-1][j+2]=-0.5f;}
         }
-     }}
+     }
 }
    public static void main(String[] args) {
       new ChessBoard();
