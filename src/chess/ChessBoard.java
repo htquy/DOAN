@@ -1211,36 +1211,36 @@ private void bKing_run(int i,int j){
     
      else if(value[i][j]==3){
         if(i+2<8&&j+1<8){
-            if(value[i+2][j+1]<=0){checkmateb[i+2][j+1]=0.5f;
+            if(value[i+2][j+1]>=0){checkmateb[i+2][j+1]=0.5f;
             if(value[i+2][j+1]==-6){checkmateb[i+2][j+1]=1;}
            }
         }
         if(i+2<8&&j-1>=0){
-            if(value[i+2][j-1]<=0){checkmateb[i+2][j-1]=0.5f;
+            if(value[i+2][j-1]>=0){checkmateb[i+2][j-1]=0.5f;
             if(value[i+2][j-1]==-6){checkmateb[i+2][j-1]=1;}}
         }
         if(i-2>=0&&j+1<8){
-            if(value[i-2][j+1]<=0){checkmateb[i-2][j+1]=0.5f;
+            if(value[i-2][j+1]>=0){checkmateb[i-2][j+1]=0.5f;
             if(value[i-2][j+1]==-6){checkmateb[i-2][j+1]=1;}}
         }
         if(i-2>=0&&j-2>=0){
-            if(value[i-2][j-1]<=0){checkmateb[i-2][j-1]=0.5f;
+            if(value[i-2][j-1]>=0){checkmateb[i-2][j-1]=0.5f;
             if(value[i-2][j-1]==-6){checkmateb[i-2][j-1]=1;}}
         }
         if(i+1<8&&j+2<8){
-            if(value[i+1][j+2]<=0){checkmateb[i+1][j+2]=0.5f;
+            if(value[i+1][j+2]>=0){checkmateb[i+1][j+2]=0.5f;
             if(value[i+1][j+2]==-6){checkmateb[i+1][j+2]=1;}}
         }
         if(i+1<8&&j-2>=0){
-            if(value[i+1][j-2]<=0){checkmateb[i+1][j-2]=0.5f;
+            if(value[i+1][j-2]>=0){checkmateb[i+1][j-2]=0.5f;
             if(value[i+1][j-2]==-6){checkmateb[i+1][j-2]=1;}}
         }
         if(i-1>=0&&j-2>=0){
-            if(value[i-1][j-2]<=0){checkmateb[i-1][j-2]=0.5f;
+            if(value[i-1][j-2]>=0){checkmateb[i-1][j-2]=0.5f;
             if(value[i-1][j-2]==-6){checkmateb[i-1][j-2]=1;}}
         }
         if(i-1>=0&&j+2<8){
-            if(value[i-1][j+2]<=0){checkmateb[i-1][j+2]=0.5f;
+            if(value[i-1][j+2]>=0){checkmateb[i-1][j+2]=0.5f;
             if(value[i-1][j+2]==-6){checkmateb[i-1][j+2]=1;}}
         }
      }
@@ -1336,35 +1336,35 @@ private void wKing_run(int i,int j){
         }}
      else if(value[i][j]==-3){
         if(i+2<8&&j+1<8){
-            if(value[i+2][j+1]>=0){checkmatew[i+2][j+1]=-0.5f;
+            if(value[i+2][j+1]<=0){checkmatew[i+2][j+1]=-0.5f;
             if(value[i+2][j+1]==6){checkmatew[i+2][j+1]=-1;}
         }
         if(i+2<8&&j-1>=0){
-            if(value[i+2][j-1]>=0){checkmatew[i+2][j-1]=-0.5f;
+            if(value[i+2][j-1]<=0){checkmatew[i+2][j-1]=-0.5f;
             if(value[i+2][j-1]==6){checkmatew[i+2][j-1]=-1;}}
         }
         if(i-2>=0&&j+1<8){
-            if(value[i-2][j+1]>=0){checkmatew[i-2][j+1]=-0.5f;
+            if(value[i-2][j+1]<=0){checkmatew[i-2][j+1]=-0.5f;
             if(value[i-2][j+1]==6){checkmatew[i-2][j+1]=-1;}}
         }
         if(i-2>=0&&j-1>=0){
-            if(value[i-2][j-1]>=0){checkmatew[i-2][j-1]=-0.5f;
+            if(value[i-2][j-1]<=0){checkmatew[i-2][j-1]=-0.5f;
             if(value[i-2][j-1]==6){checkmatew[i-2][j-1]=-1;}}
         }
         if(i+1<8&&j+2<8){
-            if(value[i+1][j+2]>=0){checkmatew[i+1][j+2]=-0.5f;
+            if(value[i+1][j+2]<=0){checkmatew[i+1][j+2]=-0.5f;
             if(value[i+1][j+2]==6){checkmatew[i+1][j+2]=-1;}}
         }
         if(i+1<8&&j-2>=0){
-            if(value[i+1][j-2]>=0){checkmatew[i+1][j-2]=-0.5f;
+            if(value[i+1][j-2]<=0){checkmatew[i+1][j-2]=-0.5f;
             if(value[i+1][j-2]==6){checkmatew[i+1][j-2]=-1;}}
         }
         if(i-1>=0&&j-2>=0){
-            if(value[i-1][j-2]>=0){checkmatew[i-1][j-2]=-0.5f;
+            if(value[i-1][j-2]<=0){checkmatew[i-1][j-2]=-0.5f;
             if(value[i-1][j-2]==6){checkmatew[i-1][j-2]=-1;}}
         }
         if(i-1>=0&&j+2<8){
-            if(value[i-1][j+2]>=0){checkmatew[i-1][j+2]=-0.5f;
+            if(value[i-1][j+2]<=0){checkmatew[i-1][j+2]=-0.5f;
             if(value[i-1][j+2]==6){checkmatew[i-1][j+2]=-1;}}
         }
      }}
